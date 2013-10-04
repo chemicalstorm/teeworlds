@@ -1,6 +1,8 @@
 /* (c) Magnus Auvinen. See licence.txt in the root of the distribution for more information. */
 /* If you are missing that file, acquire a complete release at teeworlds.com.                */
 #include <game/server/gamecontext.h>
+#include <game/server/gamecontroller.h>
+#include <game/server/player.h>
 
 #include "character.h"
 #include "laser.h"
@@ -110,5 +112,6 @@ void CLaser::Snap(int SnappingClient)
 	pObj->m_Y = (int)m_Pos.y;
 	pObj->m_FromX = (int)m_From.x;
 	pObj->m_FromY = (int)m_From.y;
+	pObj->m_Color = GameServer()->m_pController->IsTeamplay() ^ GameServer()->m_apPlayers[m_Owner]->GetTeam();
 	pObj->m_StartTick = m_EvalTick;
 }

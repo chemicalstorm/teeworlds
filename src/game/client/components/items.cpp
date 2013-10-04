@@ -220,7 +220,14 @@ void CItems::RenderLaser(const struct CNetObj_Laser *pCurrent)
 	//vec4 outer_color(0.65f,0.85f,1.0f,1.0f);
 
 	// do outline
-	vec4 OuterColor(0.075f, 0.075f, 0.25f, 1.0f);
+	vec4 OuterColor ;
+	if (pCurrent->m_Color == 0) {
+		//blue one
+		OuterColor = vec4(0.075f,0.075f,0.25f,1.0f);
+	} else {
+		//red one
+		OuterColor = vec4(0.25f,0.075f,0.075f,1.0f);
+	}
 	Graphics()->SetColor(OuterColor.r, OuterColor.g, OuterColor.b, 1.0f);
 	Out = vec2(Dir.y, -Dir.x) * (7.0f*Ia);
 
@@ -232,7 +239,16 @@ void CItems::RenderLaser(const struct CNetObj_Laser *pCurrent)
 	Graphics()->QuadsDrawFreeform(&Freeform, 1);
 
 	// do inner
-	vec4 InnerColor(0.5f, 0.5f, 1.0f, 1.0f);
+	vec4 InnerColor ;
+	if (pCurrent->m_Color == 0)
+	{
+		//blue one
+		InnerColor = vec4(0.5f,0.5f,1.0f,1.0f);
+	} else {
+		//red one
+		InnerColor = vec4(1.0f,0.5f,0.5f,1.0f);
+	}
+
 	Out = vec2(Dir.y, -Dir.x) * (5.0f*Ia);
 	Graphics()->SetColor(InnerColor.r, InnerColor.g, InnerColor.b, 1.0f); // center
 

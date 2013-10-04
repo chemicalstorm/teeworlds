@@ -94,6 +94,7 @@ Objects = [
 		NetIntAny("m_Y"),
 		NetIntAny("m_FromX"),
 		NetIntAny("m_FromY"),
+		NetIntAny("m_Color"),
 
 		NetTick("m_StartTick"),
 	]),
