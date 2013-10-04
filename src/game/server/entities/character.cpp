@@ -274,10 +274,32 @@ void CCharacter::FireWeapon()
 	{
 		// 125ms is a magical limit of how fast a human can click
 		m_ReloadTimer = 125 * Server()->TickSpeed() / 1000;
-		if(m_LastNoAmmoSound+Server()->TickSpeed() <= Server()->Tick())
+		int WantedWeapon = m_ActiveWeapon;
+		bool Found = false;
+		while(!Found) // Prev Weapon selection
 		{
-			GameServer()->CreateSound(m_Pos, SOUND_WEAPON_NOAMMO);
-			m_LastNoAmmoSound = Server()->Tick();
+			WantedWeapon = (WantedWeapon-1)<0?NUM_WEAPONS-1:WantedWeapon-1;
+			if(m_aWeapons[WantedWeapon].m_Got && m_aWeapons[WantedWeapon].m_Ammo)
+			{
+				Found = true;
+				if (m_ActiveWeapon != WEAPON_GUN)
+				{
+					m_aWeapons[m_ActiveWeapon].m_Got = false;
+				}
+			}
+		}
+		if (Found)
+		{
+			m_QueuedWeapon = WantedWeapon;
+			DoWeaponSwitch();
+		}
+		else
+		{
+			if(m_LastNoAmmoSound+Server()->TickSpeed() <= Server()->Tick())
+			{
+				GameServer()->CreateSound(m_Pos, SOUND_WEAPON_NOAMMO);
+				m_LastNoAmmoSound = Server()->Tick();
+			}
 		}
 		return;
 	}
