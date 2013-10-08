@@ -400,6 +400,7 @@ void CGameContext::CheckPureTuning()
 	if(!m_pController)
 		return;
 
+	/*
 	if(	str_comp(m_pController->GetGameType(), "DM")==0 ||
 		str_comp(m_pController->GetGameType(), "TDM")==0 ||
 		str_comp(m_pController->GetGameType(), "CTF")==0 ||
@@ -413,6 +414,7 @@ void CGameContext::CheckPureTuning()
 			m_Tuning = p;
 		}
 	}
+	*/
 }
 
 void CGameContext::SendTuningParams(int ClientID)

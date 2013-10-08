@@ -1144,6 +1144,7 @@ void CGameClient::OnNewSnapshot()
 	Client()->GetServerInfo(&CurrentServerInfo);
 	if(CurrentServerInfo.m_aGameType[0] != '0')
 	{
+		/*
 		if(str_comp(CurrentServerInfo.m_aGameType, "DM") != 0 && str_comp(CurrentServerInfo.m_aGameType, "TDM") != 0 && str_comp(CurrentServerInfo.m_aGameType, "CTF") != 0 &&
 			str_comp(CurrentServerInfo.m_aGameType, "LMS") != 0 && str_comp(CurrentServerInfo.m_aGameType, "SUR") != 0)
 			m_ServerMode = SERVERMODE_MOD;
@@ -1151,6 +1152,8 @@ void CGameClient::OnNewSnapshot()
 			m_ServerMode = SERVERMODE_PURE;
 		else
 			m_ServerMode = SERVERMODE_PUREMOD;
+		*/
+		m_ServerMode = SERVERMODE_MOD;
 	}
 }
 
