@@ -721,6 +721,13 @@ void CCharacter::Die(int Killer, int Weapon)
 	Msg.m_ModeSpecial = ModeSpecial;
 	Server()->SendPackMsg(&Msg, MSGFLAG_VITAL, -1);
 
+	// check for killing-spree
+	if(g_Config.m_SvKillingSpree)
+	{
+		GameServer()->m_apPlayers[Killer]->GetCharacter()->AddSpree();
+		EndSpree(Killer);
+	}
+
 	// a nice sound
 	GameServer()->CreateSound(m_Pos, SOUND_PLAYER_DIE);
 
@@ -890,4 +897,40 @@ void CCharacter::Snap(int SnappingClient)
 void CCharacter::PostSnap()
 {
 	m_TriggeredEvents = 0;
+}
+
+void CCharacter::AddSpree()
+{
+	static const char s_paSpreeNotes[][32] = {"is on a killing-spree", "is on a rampage", "is dominating", "is unstoppable", "is a god"};
+	static const int s_SpreeNotesSize = sizeof(s_paSpreeNotes)/sizeof(s_paSpreeNotes[0]);
+	unsigned int SpreeFreq = g_Config.m_SvKillingSpreeFreq;
+
+	m_Spree++;
+	if(m_Spree % SpreeFreq == 0)
+	{
+		unsigned int Index = m_Spree/SpreeFreq - 1;
+		if(Index >= s_SpreeNotesSize)
+			Index = s_SpreeNotesSize - 1;
+
+		char aBuf[512];
+		str_format(aBuf, sizeof(aBuf), "%s %s with %d kills in a row!",
+		    Server()->ClientName(m_pPlayer->GetCID()),
+		    s_paSpreeNotes[Index],
+		    m_Spree);
+		GameServer()->SendChat(-1, CGameContext::CHAT_ALL, aBuf);
+	}
+}
+
+void CCharacter::EndSpree(int Killer)
+{
+	if(m_Spree >= g_Config.m_SvKillingSpreeFreq)
+	{
+		char aBuf[512];
+		str_format(aBuf, sizeof(aBuf), "%s %d-kills killing spree was ended by %s",
+		    Server()->ClientName(m_pPlayer->GetCID()),
+		    m_Spree,
+		    Server()->ClientName(Killer));
+		GameServer()->SendChat(-1, CGameContext::CHAT_ALL, aBuf);
+	}
+	m_Spree = 0;
 }

@@ -50,6 +50,9 @@ public:
 	bool GiveWeapon(int Weapon, int Ammo);
 	void GiveNinja();
 
+	void AddSpree();
+	void EndSpree(int Killer);
+
 	void SetEmote(int Emote, int Tick);
 
 	bool IsAlive() const { return m_Alive; }
@@ -104,6 +107,9 @@ private:
 
 	int m_Health;
 	int m_Armor;
+
+	// Killing-spree
+	int m_Spree;
 
 	int m_TriggeredEvents;
 
