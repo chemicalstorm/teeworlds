@@ -40,6 +40,10 @@ public:
 	void OnDisconnect();
 
 	void KillCharacter(int Weapon = WEAPON_GAME);
+
+	void AddSpree();
+	void EndSpree(CPlayer *pKiller);
+
 	CCharacter *GetCharacter();
 
 	//---------------------------------------------------------
@@ -77,6 +81,9 @@ public:
 	int m_LastEmote;
 	int m_LastKill;
 	int m_LastReadyChange;
+
+	// Killing-spree
+	int m_Spree;
 
 	// TODO: clean this up
 	struct

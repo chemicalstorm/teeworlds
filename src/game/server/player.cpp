@@ -1,5 +1,6 @@
 /* (c) Magnus Auvinen. See licence.txt in the root of the distribution for more information. */
 /* If you are missing that file, acquire a complete release at teeworlds.com.                */
+#include <engine/shared/config.h>
 
 #include "entities/character.h"
 #include "gamecontext.h"
@@ -29,6 +30,7 @@ CPlayer::CPlayer(CGameContext *pGameServer, int ClientID, bool Dummy)
 	m_RespawnDisabled = GameServer()->m_pController->GetStartRespawnState();
 	m_DeadSpecMode = false;
 	m_Spawning = 0;
+	m_Spree = 0;
 }
 
 CPlayer::~CPlayer()
@@ -369,4 +371,40 @@ void CPlayer::TryRespawn()
 	m_pCharacter = new(m_ClientID) CCharacter(&GameServer()->m_World);
 	m_pCharacter->Spawn(this, SpawnPos);
 	GameServer()->CreatePlayerSpawn(SpawnPos);
+}
+
+void CPlayer::AddSpree()
+{
+	static const char s_paSpreeNotes[][32] = {"is on a killing-spree", "is on a rampage", "is dominating", "is unstoppable", "is a god"};
+	static const int s_SpreeNotesSize = sizeof(s_paSpreeNotes)/sizeof(s_paSpreeNotes[0]);
+	unsigned int SpreeFreq = g_Config.m_SvKillingSpreeFreq;
+
+	m_Spree++;
+	if(m_Spree % SpreeFreq == 0)
+	{
+		unsigned int Index = m_Spree/SpreeFreq - 1;
+		if(Index >= s_SpreeNotesSize)
+			Index = s_SpreeNotesSize - 1;
+
+		char aBuf[512];
+		str_format(aBuf, sizeof(aBuf), "%s %s with %d kills in a row!",
+		    Server()->ClientName(GetCID()),
+		    s_paSpreeNotes[Index],
+		    m_Spree);
+		GameServer()->SendChat(-1, CGameContext::CHAT_ALL, aBuf);
+	}
+}
+
+void CPlayer::EndSpree(CPlayer *pKiller)
+{
+	if(m_Spree >= g_Config.m_SvKillingSpreeFreq)
+	{
+		char aBuf[512];
+		str_format(aBuf, sizeof(aBuf), "%s %d-kills killing spree was ended by %s",
+		    Server()->ClientName(GetCID()),
+		    m_Spree,
+		    Server()->ClientName(pKiller->GetCID()));
+		GameServer()->SendChat(-1, CGameContext::CHAT_ALL, aBuf);
+	}
+	m_Spree = 0;
 }

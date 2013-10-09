@@ -214,7 +214,11 @@ int IGameController::OnCharacterDeath(CCharacter *pVictim, CPlayer *pKiller, int
 			pKiller->m_Score--; // teamkill
 		else
 			pKiller->m_Score++; // normal kill
+		if(g_Config.m_SvKillingSpree)
+			pKiller->AddSpree();
 	}
+	if(g_Config.m_SvKillingSpree)
+		pVictim->GetPlayer()->EndSpree(pKiller);
 	if(Weapon == WEAPON_SELF)
 		pVictim->GetPlayer()->m_RespawnTick = Server()->Tick()+Server()->TickSpeed()*3.0f;
 
