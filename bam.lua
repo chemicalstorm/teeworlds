@@ -299,6 +299,7 @@ debug_settings.config_ext = "_d"
 debug_settings.debug = 1
 debug_settings.optimize = 0
 debug_settings.cc.defines:Add("CONF_DEBUG")
+debug_settings.cc.flags:Add("-g")
 
 release_settings = NewSettings()
 release_settings.config_name = "release"
